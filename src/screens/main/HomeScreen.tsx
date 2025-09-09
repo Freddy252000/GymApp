@@ -7,7 +7,6 @@ import { Layout, Card } from '../../components/ui';
 
 const HomeScreen: React.FC = () => {
   const { theme } = useTheme();
-  const colors = theme.colors as any;
 
   const quickActions = [
     {

@@ -6,6 +6,7 @@ export type RootStackParamList = {
 };
 
 export type AuthStackParamList = {
+  Welcome: undefined;
   Login: undefined;
   Register: undefined;
   ForgotPassword: undefined;
@@ -20,15 +21,15 @@ export type MainTabParamList = {
 
 export type WorkoutStackParamList = {
   WorkoutList: undefined;
-  WorkoutDetail: {workoutId: string};
-  ExerciseDetail: {exerciseId: string};
+  WorkoutDetail: { workoutId: string };
+  ExerciseDetail: { exerciseId: string };
   CreateWorkout: undefined;
-  EditWorkout: {workoutId: string};
+  EditWorkout: { workoutId: string };
 };
 
 export type ProgressStackParamList = {
   ProgressOverview: undefined;
-  ProgressDetail: {type: 'weight' | 'measurements' | 'performance'};
+  ProgressDetail: { type: 'weight' | 'measurements' | 'performance' };
   ProgressHistory: undefined;
 };
 

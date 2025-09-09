@@ -1,16 +1,19 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, Alert} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {AuthStackParamList} from '../../navigation/types';
-import {useTheme} from '../../context/ThemeContext';
-import {Layout, Button, Input, Card, Header} from '../../components/ui';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AuthStackParamList } from '../../navigation/types';
+import { useTheme } from '../../context/ThemeContext';
+import { Layout, Button, Input, Card, Header } from '../../components/ui';
 
-type RegisterNavigationProp = StackNavigationProp<AuthStackParamList, 'Register'>;
+type RegisterNavigationProp = StackNavigationProp<
+  AuthStackParamList,
+  'Register'
+>;
 
 const RegisterScreen: React.FC = () => {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const navigation = useNavigation<RegisterNavigationProp>();
   const [formData, setFormData] = useState({
     name: '',
@@ -19,10 +22,10 @@ const RegisterScreen: React.FC = () => {
     confirmPassword: '',
   });
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const validateForm = () => {
-    const newErrors: {[key: string]: string} = {};
+    const newErrors: { [key: string]: string } = {};
 
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
@@ -56,23 +59,12 @@ const RegisterScreen: React.FC = () => {
     setLoading(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise<void>(resolve => setTimeout(resolve, 1500));
+
       // For demo purposes, create account and login
       await AsyncStorage.setItem('@gym_app_user_token', 'demo_token');
-      
-      Alert.alert('Success', 'Account created successfully!', [
-        {
-          text: 'OK',
-          onPress: () => {
-            // Navigate to main app (this will be handled by RootNavigator)
-            navigation.reset({
-              index: 0,
-              routes: [{name: 'Login'}],
-            });
-          },
-        },
-      ]);
+
+      Alert.alert('Success', 'Account created successfully!');
     } catch (error) {
       Alert.alert('Error', 'Registration failed. Please try again.');
     } finally {
@@ -85,10 +77,10 @@ const RegisterScreen: React.FC = () => {
   };
 
   const updateFormData = (field: string, value: string) => {
-    setFormData(prev => ({...prev, [field]: value}));
+    setFormData(prev => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({...prev, [field]: ''}));
+      setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
 
@@ -99,33 +91,45 @@ const RegisterScreen: React.FC = () => {
         showBackButton
         onLeftPress={() => navigation.goBack()}
       />
-      
-      <View style={{flex: 1, padding: theme.semanticSpacing.screenPadding}}>
+
+      <View style={{ flex: 1, padding: theme.semanticSpacing.screenPadding }}>
         {/* Header */}
-        <View style={{alignItems: 'center', marginBottom: theme.semanticSpacing['2xl']}}>
-          <Text style={[
-            theme.typography.heading.h2,
-            {color: theme.colors.text, marginBottom: theme.semanticSpacing.sm}
-          ]}>
+        <View
+          style={{
+            alignItems: 'center',
+            marginBottom: theme.semanticSpacing['2xl'],
+          }}
+        >
+          <Text
+            style={[
+              theme.typography.heading.h2,
+              {
+                color: theme.colors.text,
+                marginBottom: theme.semanticSpacing.sm,
+              },
+            ]}
+          >
             Join GymApp
           </Text>
-          
-          <Text style={[
-            theme.typography.body.large,
-            {color: theme.colors.textSecondary, textAlign: 'center'}
-          ]}>
+
+          <Text
+            style={[
+              theme.typography.body.large,
+              { color: theme.colors.textSecondary, textAlign: 'center' },
+            ]}
+          >
             Start your fitness journey today
           </Text>
         </View>
 
         {/* Registration Form */}
         <Card variant="elevated" padding="large">
-          <View style={{gap: theme.semanticSpacing.lg}}>
+          <View style={{ gap: theme.semanticSpacing.lg }}>
             <Input
               label="Full Name"
               placeholder="Enter your full name"
               value={formData.name}
-              onChangeText={(value) => updateFormData('name', value)}
+              onChangeText={value => updateFormData('name', value)}
               leftIcon="person"
               error={errors.name}
             />
@@ -134,7 +138,7 @@ const RegisterScreen: React.FC = () => {
               label="Email"
               placeholder="Enter your email"
               value={formData.email}
-              onChangeText={(value) => updateFormData('email', value)}
+              onChangeText={value => updateFormData('email', value)}
               keyboardType="email-address"
               autoCapitalize="none"
               leftIcon="email"
@@ -145,7 +149,7 @@ const RegisterScreen: React.FC = () => {
               label="Password"
               placeholder="Create a password"
               value={formData.password}
-              onChangeText={(value) => updateFormData('password', value)}
+              onChangeText={value => updateFormData('password', value)}
               secureTextEntry
               leftIcon="lock"
               error={errors.password}
@@ -155,7 +159,7 @@ const RegisterScreen: React.FC = () => {
               label="Confirm Password"
               placeholder="Confirm your password"
               value={formData.confirmPassword}
-              onChangeText={(value) => updateFormData('confirmPassword', value)}
+              onChangeText={value => updateFormData('confirmPassword', value)}
               secureTextEntry
               leftIcon="lock"
               error={errors.confirmPassword}
@@ -174,23 +178,29 @@ const RegisterScreen: React.FC = () => {
         </Card>
 
         {/* Sign In Link */}
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: theme.semanticSpacing['2xl'],
-        }}>
-          <Text style={[
-            theme.typography.body.medium,
-            {color: theme.colors.textSecondary}
-          ]}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: theme.semanticSpacing['2xl'],
+          }}
+        >
+          <Text
+            style={[
+              theme.typography.body.medium,
+              { color: theme.colors.textSecondary },
+            ]}
+          >
             Already have an account?{' '}
           </Text>
           <TouchableOpacity onPress={handleSignIn}>
-            <Text style={[
-              theme.typography.body.medium,
-              {color: theme.colors.primary[500], fontWeight: '600'}
-            ]}>
+            <Text
+              style={[
+                theme.typography.body.medium,
+                { color: theme.colors.primary[500], fontWeight: '600' },
+              ]}
+            >
               Sign In
             </Text>
           </TouchableOpacity>

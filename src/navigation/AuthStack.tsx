@@ -1,24 +1,25 @@
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
-import {AuthStackParamList} from './types';
-import {useTheme} from '../context/ThemeContext';
+import { createStackNavigator } from '@react-navigation/stack';
+import { AuthStackParamList } from './types';
+import { useTheme } from '../context/ThemeContext';
 
 // Import screens (we'll create these later)
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
+import WelcomeScreen from '../screens/auth/WelcomeScreen';
 
 const Stack = createStackNavigator<AuthStackParamList>();
 
 const AuthStack: React.FC = () => {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
 
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        cardStyle: {backgroundColor: theme.colors.background},
-        cardStyleInterpolator: ({current, layouts}) => {
+        cardStyle: { backgroundColor: theme.colors.background },
+        cardStyleInterpolator: ({ current, layouts }) => {
           return {
             cardStyle: {
               transform: [
@@ -32,7 +33,9 @@ const AuthStack: React.FC = () => {
             },
           };
         },
-      }}>
+      }}
+    >
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />

@@ -1,31 +1,31 @@
 // Modern Gym App Color Palette
 export const colors = {
-  // Primary Colors - Energetic and Motivating
+  // Primary Colors - Modern Indigo
   primary: {
-    50: '#FFF7ED',
-    100: '#FFEDD5',
-    200: '#FED7AA',
-    300: '#FDBA74',
-    400: '#FB923C',
-    500: '#F97316', // Main Orange
-    600: '#EA580C',
-    700: '#C2410C',
-    800: '#9A3412',
-    900: '#7C2D12',
+    50: '#EEF2FF',
+    100: '#E0E7FF',
+    200: '#C7D2FE',
+    300: '#A5B4FC',
+    400: '#818CF8',
+    500: '#6366F1',
+    600: '#4F46E5',
+    700: '#4338CA',
+    800: '#3730A3',
+    900: '#312E81',
   },
 
-  // Secondary Colors - Cool and Professional
+  // Secondary Colors - Clean Teal
   secondary: {
-    50: '#F0F9FF',
-    100: '#E0F2FE',
-    200: '#BAE6FD',
-    300: '#7DD3FC',
-    400: '#38BDF8',
-    500: '#0EA5E9', // Main Blue
-    600: '#0284C7',
-    700: '#0369A1',
-    800: '#075985',
-    900: '#0C4A6E',
+    50: '#ECFEFF',
+    100: '#CFFAFE',
+    200: '#A5F3FC',
+    300: '#67E8F9',
+    400: '#22D3EE',
+    500: '#06B6D4',
+    600: '#0891B2',
+    700: '#0E7490',
+    800: '#155E75',
+    900: '#164E63',
   },
 
   // Accent Colors - Success, Warning, Error
@@ -53,6 +53,19 @@ export const colors = {
     700: '#B45309',
     800: '#92400E',
     900: '#78350F',
+  },
+
+  info: {
+    50: '#EFF6FF',
+    100: '#DBEAFE',
+    200: '#BFDBFE',
+    300: '#93C5FD',
+    400: '#60A5FA',
+    500: '#3B82F6',
+    600: '#2563EB',
+    700: '#1D4ED8',
+    800: '#1E40AF',
+    900: '#1E3A8A',
   },
 
   error: {
@@ -84,34 +97,34 @@ export const colors = {
 
   // Dark Theme Colors
   dark: {
-    background: '#0F0F0F',
-    surface: '#1A1A1A',
-    card: '#262626',
-    border: '#404040',
-    text: '#FAFAFA',
-    textSecondary: '#A3A3A3',
-    textMuted: '#737373',
+    background: '#020617',
+    surface: '#0F172A',
+    card: '#111827',
+    border: '#1E293B',
+    text: '#F8FAFC',
+    textSecondary: '#CBD5E1',
+    textMuted: '#94A3B8',
   },
 
   // Light Theme Colors
   light: {
-    background: '#FFFFFF',
-    surface: '#FAFAFA',
+    background: '#F8FAFC',
+    surface: '#FFFFFF',
     card: '#FFFFFF',
-    border: '#E5E5E5',
-    text: '#171717',
-    textSecondary: '#525252',
-    textMuted: '#737373',
+    border: '#E2E8F0',
+    text: '#0F172A',
+    textSecondary: '#475569',
+    textMuted: '#64748B',
   },
 
   // Gradient Colors
   gradients: {
-    primary: ['#F97316', '#EA580C'],
-    secondary: ['#0EA5E9', '#0284C7'],
+    primary: ['#6366F1', '#8B5CF6'],
+    secondary: ['#06B6D4', '#14B8A6'],
     success: ['#22C55E', '#16A34A'],
-    sunset: ['#F97316', '#EF4444'],
-    ocean: ['#0EA5E9', '#22C55E'],
-    night: ['#171717', '#404040'],
+    sunset: ['#8B5CF6', '#EC4899'],
+    ocean: ['#06B6D4', '#14B8A6'],
+    night: ['#0F172A', '#1E293B'],
   },
 
   // Semantic Colors
@@ -120,13 +133,13 @@ export const colors = {
   black: '#000000',
 
   // Dynamic theme colors (will be overridden by theme)
-  background: '#FFFFFF',
-  surface: '#FAFAFA',
+  background: '#F8FAFC',
+  surface: '#FFFFFF',
   card: '#FFFFFF',
-  border: '#E5E5E5',
-  text: '#171717',
-  textSecondary: '#525252',
-  textMuted: '#737373',
+  border: '#E2E8F0',
+  text: '#0F172A',
+  textSecondary: '#475569',
+  textMuted: '#64748B',
 };
 
 export type ColorPalette = typeof colors;

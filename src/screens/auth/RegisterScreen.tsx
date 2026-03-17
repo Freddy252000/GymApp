@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, Alert, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import LinearGradient from 'react-native-linear-gradient';
 import { AuthStackParamList } from '../../navigation/types';
 import { useTheme } from '../../context/ThemeContext';
-import { Layout, Button, Input, Card, Header } from '../../components/ui';
+import {
+  Layout,
+  Button,
+  Input,
+  Card,
+  Header,
+  Badge,
+  Divider,
+  ProgressBar,
+} from '../../components/ui';
 
 type RegisterNavigationProp = StackNavigationProp<
   AuthStackParamList,
@@ -23,6 +34,37 @@ const RegisterScreen: React.FC = () => {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [acceptTerms, setAcceptTerms] = useState(false);
+
+  // Animation values
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(30)).current;
+
+  useEffect(() => {
+    // Start animations when component mounts
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
+  const calculatePasswordStrength = (password: string) => {
+    let strength = 0;
+    if (password.length >= 6) strength += 25;
+    if (password.length >= 8) strength += 25;
+    if (/[A-Z]/.test(password)) strength += 25;
+    if (/[0-9]/.test(password)) strength += 25;
+    return strength;
+  };
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -56,6 +98,14 @@ const RegisterScreen: React.FC = () => {
   const handleRegister = async () => {
     if (!validateForm()) return;
 
+    if (!acceptTerms) {
+      Alert.alert(
+        'Terms Required',
+        'Please accept the terms and conditions to continue.',
+      );
+      return;
+    }
+
     setLoading(true);
     try {
       // Simulate API call
@@ -64,7 +114,22 @@ const RegisterScreen: React.FC = () => {
       // For demo purposes, create account and login
       await AsyncStorage.setItem('@gym_app_user_token', 'demo_token');
 
-      Alert.alert('Success', 'Account created successfully!');
+      Alert.alert(
+        'Success',
+        'Account created successfully! Welcome to GymApp!',
+        [
+          {
+            text: 'Get Started',
+            onPress: () => {
+              // Navigate to main app
+              navigation.getParent()?.reset({
+                index: 0,
+                routes: [{ name: 'Main' }],
+              });
+            },
+          },
+        ],
+      );
     } catch (error) {
       Alert.alert('Error', 'Registration failed. Please try again.');
     } finally {
@@ -78,10 +143,30 @@ const RegisterScreen: React.FC = () => {
 
   const updateFormData = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+
+    // Update password strength when password changes
+    if (field === 'password') {
+      setPasswordStrength(calculatePasswordStrength(value));
+    }
+
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
+  };
+
+  const getPasswordStrengthColor = () => {
+    if (passwordStrength < 25) return theme.colors.error[500];
+    if (passwordStrength < 50) return theme.colors.warning[500];
+    if (passwordStrength < 75) return theme.colors.secondary[500];
+    return theme.colors.success[500];
+  };
+
+  const getPasswordStrengthLabel = () => {
+    if (passwordStrength < 25) return 'Weak';
+    if (passwordStrength < 50) return 'Fair';
+    if (passwordStrength < 75) return 'Good';
+    return 'Strong';
   };
 
   return (
@@ -92,7 +177,14 @@ const RegisterScreen: React.FC = () => {
         onLeftPress={() => navigation.goBack()}
       />
 
-      <View style={{ flex: 1, padding: theme.semanticSpacing.screenPadding }}>
+      <Animated.View
+        style={{
+          flex: 1,
+          padding: theme.semanticSpacing.screenPadding,
+          opacity: fadeAnim,
+          transform: [{ translateY: slideAnim }],
+        }}
+      >
         {/* Header */}
         <View
           style={{
@@ -100,6 +192,20 @@ const RegisterScreen: React.FC = () => {
             marginBottom: theme.semanticSpacing['2xl'],
           }}
         >
+          <LinearGradient
+            colors={theme.colors.gradients.primary}
+            style={{
+              width: 60,
+              height: 60,
+              borderRadius: 30,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: theme.semanticSpacing.md,
+            }}
+          >
+            <Text style={{ fontSize: 30, color: theme.colors.white }}>🚀</Text>
+          </LinearGradient>
+
           <Text
             style={[
               theme.typography.heading.h2,
@@ -120,6 +226,14 @@ const RegisterScreen: React.FC = () => {
           >
             Start your fitness journey today
           </Text>
+
+          <Badge
+            variant="success"
+            size="small"
+            style={{ marginTop: theme.semanticSpacing.sm }}
+          >
+            Free to join • No credit card required
+          </Badge>
         </View>
 
         {/* Registration Form */}
@@ -145,15 +259,56 @@ const RegisterScreen: React.FC = () => {
               error={errors.email}
             />
 
-            <Input
-              label="Password"
-              placeholder="Create a password"
-              value={formData.password}
-              onChangeText={value => updateFormData('password', value)}
-              secureTextEntry
-              leftIcon="lock"
-              error={errors.password}
-            />
+            <View>
+              <Input
+                label="Password"
+                placeholder="Create a password"
+                value={formData.password}
+                onChangeText={value => updateFormData('password', value)}
+                secureTextEntry
+                leftIcon="lock"
+                error={errors.password}
+              />
+
+              {formData.password.length > 0 && (
+                <View style={{ marginTop: theme.semanticSpacing.sm }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: 4,
+                    }}
+                  >
+                    <Text
+                      style={[
+                        theme.typography.caption,
+                        { color: theme.colors.textSecondary },
+                      ]}
+                    >
+                      Password Strength
+                    </Text>
+                    <Text
+                      style={[
+                        theme.typography.caption,
+                        {
+                          color: getPasswordStrengthColor(),
+                          fontWeight: '600',
+                        },
+                      ]}
+                    >
+                      {getPasswordStrengthLabel()}
+                    </Text>
+                  </View>
+                  <ProgressBar
+                    progress={passwordStrength}
+                    height={4}
+                    color={getPasswordStrengthColor()}
+                    rounded
+                  />
+                </View>
+              )}
+            </View>
 
             <Input
               label="Confirm Password"
@@ -165,6 +320,48 @@ const RegisterScreen: React.FC = () => {
               error={errors.confirmPassword}
             />
 
+            {/* Terms and Conditions */}
+            <TouchableOpacity
+              onPress={() => setAcceptTerms(!acceptTerms)}
+              style={{ flexDirection: 'row', alignItems: 'flex-start' }}
+            >
+              <Icon
+                name={acceptTerms ? 'check-box' : 'check-box-outline-blank'}
+                size={20}
+                color={
+                  acceptTerms
+                    ? theme.colors.primary[500]
+                    : theme.colors.textMuted
+                }
+                style={{ marginRight: 8, marginTop: 2 }}
+              />
+              <Text
+                style={[
+                  theme.typography.body.small,
+                  { color: theme.colors.textSecondary, flex: 1 },
+                ]}
+              >
+                I agree to the{' '}
+                <Text
+                  style={{
+                    color: theme.colors.primary[500],
+                    fontWeight: '600',
+                  }}
+                >
+                  Terms of Service
+                </Text>{' '}
+                and{' '}
+                <Text
+                  style={{
+                    color: theme.colors.primary[500],
+                    fontWeight: '600',
+                  }}
+                >
+                  Privacy Policy
+                </Text>
+              </Text>
+            </TouchableOpacity>
+
             <Button
               title="Create Account"
               onPress={handleRegister}
@@ -173,6 +370,18 @@ const RegisterScreen: React.FC = () => {
               fullWidth
               loading={loading}
               gradient
+            />
+
+            <Divider label="or" />
+
+            <Button
+              title="Continue with Google"
+              onPress={() =>
+                Alert.alert('Info', 'Google sign-up would be implemented here')
+              }
+              variant="outline"
+              size="large"
+              fullWidth
             />
           </View>
         </Card>
@@ -205,7 +414,7 @@ const RegisterScreen: React.FC = () => {
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </Animated.View>
     </Layout>
   );
 };

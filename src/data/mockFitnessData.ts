@@ -1,0 +1,158 @@
+import {
+  ExerciseLibraryItem,
+  MeasurementEntry,
+  PersonalRecord,
+  UserProfile,
+  WorkoutPlan,
+  WorkoutReminder,
+} from '../types/fitness';
+
+export const workoutPlans: WorkoutPlan[] = [
+  {
+    id: 'push-strength',
+    name: 'Push Strength Builder',
+    description: 'Chest, shoulders, and triceps focused strength session.',
+    duration: 48,
+    exercises: 6,
+    difficulty: 'Intermediate',
+    category: 'Strength',
+    calories: 420,
+    muscleGroups: ['Chest', 'Shoulders', 'Triceps'],
+    completionRate: 82,
+    isFavorite: true,
+    lastPerformed: new Date('2026-03-15'),
+  },
+  {
+    id: 'lower-power',
+    name: 'Lower Body Power',
+    description: 'Compound lower body plan for squat and posterior chain gains.',
+    duration: 55,
+    exercises: 7,
+    difficulty: 'Advanced',
+    category: 'Power',
+    calories: 510,
+    muscleGroups: ['Quads', 'Glutes', 'Hamstrings'],
+    completionRate: 67,
+    isCompleted: true,
+    lastPerformed: new Date('2026-03-14'),
+  },
+  {
+    id: 'hiit-core',
+    name: 'HIIT Core Blast',
+    description: 'Fast-paced conditioning workout with core finisher.',
+    duration: 28,
+    exercises: 8,
+    difficulty: 'Beginner',
+    category: 'Conditioning',
+    calories: 310,
+    muscleGroups: ['Core', 'Full Body'],
+    completionRate: 91,
+    isFavorite: true,
+    lastPerformed: new Date('2026-03-13'),
+  },
+];
+
+export const exerciseLibrary: ExerciseLibraryItem[] = [
+  {
+    id: 'bench-press',
+    name: 'Barbell Bench Press',
+    category: 'Compound Lift',
+    muscleGroups: ['Chest', 'Triceps', 'Shoulders'],
+    difficulty: 'Intermediate',
+    equipment: 'Barbell',
+    duration: 12,
+    calories: 95,
+    description: 'Classic horizontal pressing movement for upper-body strength.',
+    instructions: ['Retract shoulder blades.', 'Lower under control.', 'Drive bar explosively.'],
+    sets: 5,
+    reps: 5,
+    weight: 92.5,
+    restTime: 120,
+  },
+  {
+    id: 'romanian-deadlift',
+    name: 'Romanian Deadlift',
+    category: 'Posterior Chain',
+    muscleGroups: ['Hamstrings', 'Glutes', 'Lower Back'],
+    difficulty: 'Intermediate',
+    equipment: 'Barbell',
+    duration: 10,
+    calories: 88,
+    description: 'Hip hinge pattern used to build hamstrings and glutes.',
+    instructions: ['Push hips back.', 'Keep bar close to legs.', 'Stop at hamstring stretch.'],
+    sets: 4,
+    reps: 8,
+    weight: 100,
+    restTime: 90,
+  },
+  {
+    id: 'plank-reach',
+    name: 'Plank Reach',
+    category: 'Core Stability',
+    muscleGroups: ['Core', 'Shoulders'],
+    difficulty: 'Beginner',
+    equipment: 'Bodyweight',
+    duration: 6,
+    calories: 35,
+    description: 'Anti-rotation core movement that improves trunk control.',
+    instructions: ['Keep hips square.', 'Reach slowly.', 'Brace abs throughout.'],
+    sets: 3,
+    reps: 12,
+    restTime: 45,
+  },
+  {
+    id: 'rower-sprint',
+    name: 'Rower Sprint',
+    category: 'Conditioning',
+    muscleGroups: ['Full Body'],
+    difficulty: 'Advanced',
+    equipment: 'Rower',
+    duration: 8,
+    calories: 110,
+    description: 'High-intensity interval to build conditioning and power output.',
+    instructions: ['Drive with legs first.', 'Stay long through the pull.', 'Recover under control.'],
+    sets: 6,
+    reps: 30,
+    restTime: 60,
+  },
+];
+
+export const measurementHistory: MeasurementEntry[] = [
+  {id: 'm1', date: '2026-02-10', weightKg: 84.2, bodyFatPercent: 18.6, waistCm: 87, chestCm: 104, armCm: 36, thighCm: 59},
+  {id: 'm2', date: '2026-02-17', weightKg: 83.8, bodyFatPercent: 18.2, waistCm: 86.5, chestCm: 104.5, armCm: 36.2, thighCm: 59.2},
+  {id: 'm3', date: '2026-02-24', weightKg: 83.4, bodyFatPercent: 17.8, waistCm: 86, chestCm: 105, armCm: 36.4, thighCm: 59.4},
+  {id: 'm4', date: '2026-03-03', weightKg: 83.1, bodyFatPercent: 17.5, waistCm: 85.4, chestCm: 105.4, armCm: 36.6, thighCm: 59.8},
+  {id: 'm5', date: '2026-03-10', weightKg: 82.7, bodyFatPercent: 17.1, waistCm: 84.9, chestCm: 105.8, armCm: 36.9, thighCm: 60},
+  {id: 'm6', date: '2026-03-17', weightKg: 82.4, bodyFatPercent: 16.8, waistCm: 84.2, chestCm: 106.1, armCm: 37.1, thighCm: 60.3},
+];
+
+export const personalRecords: PersonalRecord[] = [
+  {id: 'pr1', exerciseId: 'bench-press', exercise: 'Bench Press', value: 105, unit: 'kg', date: '2026-03-16', improvement: '+2.5kg'},
+  {id: 'pr2', exerciseId: 'romanian-deadlift', exercise: 'Romanian Deadlift', value: 130, unit: 'kg', date: '2026-03-11', improvement: '+5kg'},
+  {id: 'pr3', exerciseId: 'rower-sprint', exercise: '500m Row', value: 96, unit: 'sec', date: '2026-03-09', improvement: '-3 sec'},
+  {id: 'pr4', exerciseId: 'plank-reach', exercise: 'Plank Hold', value: 180, unit: 'sec', date: '2026-03-04', improvement: '+20 sec'},
+];
+
+export const workoutReminders: WorkoutReminder[] = [
+  {id: 'r1', title: 'Morning Strength', time: '06:30', days: ['Mon', 'Wed', 'Fri'], enabled: true},
+  {id: 'r2', title: 'Mobility Reset', time: '19:00', days: ['Tue', 'Thu'], enabled: true},
+];
+
+export const userProfile: UserProfile = {
+  name: 'Freddy Vincent',
+  email: 'freddy.vincent@example.com',
+  fitnessGoal: 'Build lean muscle while reducing body fat.',
+  level: 'Intermediate',
+  weeklyTarget: 5,
+  preferredWorkoutTime: 'Morning',
+  notificationsEnabled: true,
+  offlineModeEnabled: true,
+};
+
+export const weeklySummary = {
+  workoutsCompleted: 4,
+  weeklyTarget: 5,
+  currentStreak: 12,
+  minutesTrained: 214,
+  recoveryScore: 78,
+};

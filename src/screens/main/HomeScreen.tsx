@@ -1,382 +1,173 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import LinearGradient from 'react-native-linear-gradient';
+import { Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useTheme } from '../../context/ThemeContext';
-import { Layout, Card } from '../../components/ui';
+import { MeasurementCard, ReminderCard, SectionHeader } from '../../components/fitness';
+import { Badge, Button, Card, Layout, StatCard, WorkoutCard } from '../../components/ui';
+import {
+  measurementHistory,
+  personalRecords,
+  userProfile,
+  weeklySummary,
+  workoutPlans,
+  workoutReminders,
+} from '../../data/mockFitnessData';
+import { MainTabParamList } from '../../navigation/types';
+
+type HomeNavigationProp = BottomTabNavigationProp<MainTabParamList, 'Home'>;
 
 const HomeScreen: React.FC = () => {
+  const navigation = useNavigation<HomeNavigationProp>();
   const { theme } = useTheme();
-
-  const quickActions = [
-    {
-      id: 1,
-      title: 'Start Workout',
-      icon: 'play-arrow',
-      color: theme.colors.primary[500],
-    },
-    {
-      id: 2,
-      title: 'Log Exercise',
-      icon: 'add',
-      color: theme.colors.secondary[500],
-    },
-    {
-      id: 3,
-      title: 'View Progress',
-      icon: 'trending-up',
-      color: theme.colors.success[500],
-    },
-    {
-      id: 4,
-      title: 'Set Goals',
-      icon: 'flag',
-      color: theme.colors.warning[500],
-    },
-  ];
-
-  const stats = [
-    { label: 'Workouts This Week', value: '4', icon: 'fitness-center' },
-    { label: 'Total Exercises', value: '127', icon: 'list' },
-    {
-      label: 'Current Streak',
-      value: '12 days',
-      icon: 'local-fire-department',
-    },
-    { label: 'Personal Records', value: '8', icon: 'emoji-events' },
-  ];
+  const latestMeasurement = measurementHistory[measurementHistory.length - 1];
+  const firstMeasurement = measurementHistory[0];
+  const featuredWorkout = workoutPlans[0];
 
   return (
-    <Layout variant="scroll" padding={false}>
-      {/* Header with Gradient */}
-      <LinearGradient
-        colors={theme.colors.gradients.primary}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={{
-          paddingTop: 60,
-          paddingBottom: theme.semanticSpacing['2xl'],
-          paddingHorizontal: theme.semanticSpacing.screenPadding,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: theme.semanticSpacing.lg,
-          }}
-        >
-          <View>
-            <Text
-              style={[
-                theme.typography.body.medium,
-                { color: theme.colors.white, opacity: 0.9 },
-              ]}
-            >
-              Good morning,
-            </Text>
-            <Text
-              style={[
-                theme.typography.heading.h2,
-                { color: theme.colors.white },
-              ]}
-            >
-              John Doe
-            </Text>
-          </View>
-          <TouchableOpacity
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Icon name="notifications" size={24} color={theme.colors.white} />
-          </TouchableOpacity>
+    <Layout variant="scroll">
+      <View style={{ paddingVertical: theme.semanticSpacing.lg }}>
+        <Text style={[theme.typography.body.medium, { color: theme.colors.textSecondary }]}>Welcome back</Text>
+        <Text style={[theme.typography.heading.h2, { color: theme.colors.text, marginTop: 4 }]}>
+          {userProfile.name}
+        </Text>
+        <Text
+          style={[
+            theme.typography.body.medium,
+            { color: theme.colors.textSecondary, marginTop: theme.semanticSpacing.sm },
+          ]}>
+          Stay on track with workout plans, reminders, body measurements, and personal bests.
+        </Text>
+      </View>
+
+      <View style={{ gap: theme.semanticSpacing.md }}>
+        <StatCard
+          title="Weekly target"
+          value={`${weeklySummary.workoutsCompleted}/${weeklySummary.weeklyTarget}`}
+          subtitle="Workout sessions completed"
+          icon="flag"
+          variant="gradient"
+          progress={{ current: weeklySummary.workoutsCompleted, total: weeklySummary.weeklyTarget }}
+        />
+
+        {/* <View style={{ flexDirection: 'row', gap: theme.semanticSpacing.md }}>
+          <StatCard
+            title="Current streak"
+            value={weeklySummary.currentStreak}
+            subtitle="Days in a row"
+            icon="local-fire-department"
+            style={{ flex: 1, alignSelf: 'flex-start' }}
+          />
+          <StatCard
+            title="Minutes trained"
+            value={weeklySummary.minutesTrained}
+            subtitle="This week"
+            icon="schedule"
+            style={{ flex: 1, alignSelf: 'flex-start' }}
+          />
+        </View> */}
+        <View style={{ flexDirection: 'row', gap: theme.semanticSpacing.md }}>
+          <StatCard
+            title="Current streak"
+            value={weeklySummary.currentStreak}
+            subtitle="Days in a row"
+            icon="local-fire-department"
+            style={{ flex: 1 }}
+          />
+          <StatCard
+            title="Minutes trained"
+            value={weeklySummary.minutesTrained}
+            subtitle="This week"
+            icon="schedule"
+            style={{ flex: 1 }}
+          />
         </View>
+      </View>
 
-        {/* Today's Goal Card */}
-        <Card
-          variant="default"
-          padding="medium"
-          style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <View style={{ flex: 1 }}>
-              <Text
-                style={[
-                  theme.typography.label.medium,
-                  { color: theme.colors.white, opacity: 0.9 },
-                ]}
-              >
-                Today's Goal
-              </Text>
-              <Text
-                style={[
-                  theme.typography.heading.h4,
-                  { color: theme.colors.white },
-                ]}
-              >
-                Upper Body Strength
-              </Text>
-              <Text
-                style={[
-                  theme.typography.body.small,
-                  { color: theme.colors.white, opacity: 0.8 },
-                ]}
-              >
-                45 minutes • 6 exercises
-              </Text>
-            </View>
-            <TouchableOpacity
-              style={{
-                backgroundColor: theme.colors.white,
-                paddingHorizontal: theme.semanticSpacing.md,
-                paddingVertical: theme.semanticSpacing.sm,
-                borderRadius: theme.semanticSpacing.borderRadius.lg,
-              }}
-            >
-              <Text
-                style={[
-                  theme.typography.button.medium,
-                  { color: theme.colors.primary[500] },
-                ]}
-              >
-                Start
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </Card>
-      </LinearGradient>
+      <View style={{ marginTop: theme.semanticSpacing['2xl'] }}>
+        <SectionHeader
+          title="Today's featured workout"
+          subtitle="Workout plan management starts here"
+          actionLabel="All workouts"
+          onActionPress={() => navigation.navigate('Workouts')}
+        />
+        <WorkoutCard
+          workout={featuredWorkout}
+          variant="featured"
+          onPress={() => navigation.navigate('Workouts')}
+          onStart={() => navigation.navigate('Workouts')}
+          onFavorite={() => navigation.navigate('Workouts')}
+        />
+      </View>
 
-      <View style={{ padding: theme.semanticSpacing.screenPadding }}>
-        {/* Quick Actions */}
-        <View style={{ marginBottom: theme.semanticSpacing['2xl'] }}>
-          <Text
-            style={[
-              theme.typography.heading.h4,
-              {
-                color: theme.colors.text,
-                marginBottom: theme.semanticSpacing.lg,
-              },
-            ]}
-          >
-            Quick Actions
-          </Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              gap: theme.semanticSpacing.md,
-            }}
-          >
-            {quickActions.map(action => (
-              <TouchableOpacity
-                key={action.id}
-                style={{
-                  flex: 1,
-                  minWidth: '45%',
-                  backgroundColor: theme.colors.card,
-                  padding: theme.semanticSpacing.md,
-                  borderRadius: theme.semanticSpacing.borderRadius.xl,
-                  alignItems: 'center',
-                  ...theme.shadows.sm,
-                }}
-              >
-                <View
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 24,
-                    backgroundColor: `${action.color}20`,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginBottom: theme.semanticSpacing.sm,
-                  }}
-                >
-                  <Icon name={action.icon} size={24} color={action.color} />
+      <View style={{ marginTop: theme.semanticSpacing['2xl'] }}>
+        <SectionHeader
+          title="Body composition"
+          subtitle="Latest body measurement tracking snapshot"
+          actionLabel="Progress"
+          onActionPress={() => navigation.navigate('Progress')}
+        />
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: theme.semanticSpacing.md }}>
+          <MeasurementCard
+            label="Weight"
+            value={`${latestMeasurement.weightKg} kg`}
+            change={`${(latestMeasurement.weightKg - firstMeasurement.weightKg).toFixed(1)} kg since start`}
+            positive={latestMeasurement.weightKg <= firstMeasurement.weightKg}
+          />
+          <MeasurementCard
+            label="Body fat"
+            value={`${latestMeasurement.bodyFatPercent}%`}
+            change={`${(latestMeasurement.bodyFatPercent - firstMeasurement.bodyFatPercent).toFixed(1)}% since start`}
+            positive={latestMeasurement.bodyFatPercent <= firstMeasurement.bodyFatPercent}
+          />
+        </View>
+      </View>
+
+      <View style={{ marginTop: theme.semanticSpacing['2xl'] }}>
+        <SectionHeader
+          title="Workout reminders"
+          subtitle="Push-notification reminder models are scaffolded"
+          actionLabel="Profile"
+          onActionPress={() => navigation.navigate('Profile')}
+        />
+        <View style={{ gap: theme.semanticSpacing.md }}>
+          {workoutReminders.map(reminder => (
+            <ReminderCard key={reminder.id} reminder={reminder} />
+          ))}
+        </View>
+      </View>
+
+      <View style={{ marginTop: theme.semanticSpacing['2xl'] }}>
+        <SectionHeader title="Recent personal records" subtitle="Strength and performance milestones" />
+        <View style={{ gap: theme.semanticSpacing.md }}>
+          {personalRecords.slice(0, 2).map(record => (
+            <Card key={record.id} variant="elevated" padding="medium">
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={[theme.typography.heading.h5, { color: theme.colors.text }]}>{record.exercise}</Text>
+                  <Text style={[theme.typography.body.small, { color: theme.colors.textSecondary }]}>Achieved {record.date}</Text>
                 </View>
-                <Text
-                  style={[
-                    theme.typography.label.medium,
-                    { color: theme.colors.text, textAlign: 'center' },
-                  ]}
-                >
-                  {action.title}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        {/* Stats Overview */}
-        <View style={{ marginBottom: theme.semanticSpacing['2xl'] }}>
-          <Text
-            style={[
-              theme.typography.heading.h4,
-              {
-                color: theme.colors.text,
-                marginBottom: theme.semanticSpacing.lg,
-              },
-            ]}
-          >
-            Your Stats
-          </Text>
-          <View style={{ gap: theme.semanticSpacing.md }}>
-            {stats.map((stat, index) => (
-              <Card key={index} variant="elevated" padding="medium">
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      flex: 1,
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 20,
-                        backgroundColor: theme.colors.primary[100],
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginRight: theme.semanticSpacing.md,
-                      }}
-                    >
-                      <Icon
-                        name={stat.icon}
-                        size={20}
-                        color={theme.colors.primary[500]}
-                      />
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Text
-                        style={[
-                          theme.typography.body.medium,
-                          { color: theme.colors.textSecondary },
-                        ]}
-                      >
-                        {stat.label}
-                      </Text>
-                      <Text
-                        style={[
-                          theme.typography.heading.h4,
-                          { color: theme.colors.text },
-                        ]}
-                      >
-                        {stat.value}
-                      </Text>
-                    </View>
-                  </View>
-                  <Icon
-                    name="chevron-right"
-                    size={24}
-                    color={theme.colors.textMuted}
-                  />
-                </View>
-              </Card>
-            ))}
-          </View>
-        </View>
-
-        {/* Recent Workouts */}
-        <View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: theme.semanticSpacing.lg,
-            }}
-          >
-            <Text
-              style={[
-                theme.typography.heading.h4,
-                { color: theme.colors.text },
-              ]}
-            >
-              Recent Workouts
-            </Text>
-            <TouchableOpacity>
+                <Badge variant="success">{record.improvement}</Badge>
+              </View>
               <Text
                 style={[
-                  theme.typography.body.medium,
-                  { color: theme.colors.primary[500] },
-                ]}
-              >
-                View All
+                  theme.typography.heading.h3,
+                  { color: theme.colors.primary[500], marginTop: theme.semanticSpacing.sm },
+                ]}>
+                {record.value} {record.unit}
               </Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={{ gap: theme.semanticSpacing.md }}>
-            {[1, 2, 3].map(item => (
-              <Card key={item} variant="elevated" padding="medium">
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <View style={{ flex: 1 }}>
-                    <Text
-                      style={[
-                        theme.typography.heading.h5,
-                        { color: theme.colors.text },
-                      ]}
-                    >
-                      Push Day Workout
-                    </Text>
-                    <Text
-                      style={[
-                        theme.typography.body.small,
-                        { color: theme.colors.textSecondary },
-                      ]}
-                    >
-                      Yesterday • 45 minutes • 8 exercises
-                    </Text>
-                  </View>
-                  <View style={{ alignItems: 'flex-end' }}>
-                    <Text
-                      style={[
-                        theme.typography.label.small,
-                        { color: theme.colors.success[500] },
-                      ]}
-                    >
-                      Completed
-                    </Text>
-                    <Text
-                      style={[
-                        theme.typography.body.small,
-                        { color: theme.colors.textMuted },
-                      ]}
-                    >
-                      285 calories
-                    </Text>
-                  </View>
-                </View>
-              </Card>
-            ))}
-          </View>
+            </Card>
+          ))}
         </View>
+      </View>
+
+      <View style={{ marginTop: theme.semanticSpacing['2xl'], marginBottom: theme.semanticSpacing.xl }}>
+        <Button
+          title="View full progress dashboard"
+          onPress={() => navigation.navigate('Progress')}
+          fullWidth
+          gradient
+        />
       </View>
     </Layout>
   );

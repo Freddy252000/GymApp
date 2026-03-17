@@ -1,11 +1,26 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  Animated,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import LinearGradient from 'react-native-linear-gradient';
 import { AuthStackParamList } from '../../navigation/types';
 import { useTheme } from '../../context/ThemeContext';
-import { Layout, Button, Input, Card } from '../../components/ui';
+import {
+  Layout,
+  Button,
+  Input,
+  Card,
+  Divider,
+  Badge,
+} from '../../components/ui';
 
 type LoginNavigationProp = StackNavigationProp<AuthStackParamList, 'Login'>;
 
@@ -15,9 +30,50 @@ const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {},
   );
+
+  // Animation values
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(30)).current;
+
+  useEffect(() => {
+    // Start animations when component mounts
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    // Load saved email if remember me was checked
+    loadSavedCredentials();
+  }, []);
+
+  const loadSavedCredentials = async () => {
+    try {
+      const savedEmail = await AsyncStorage.getItem('@gym_app_saved_email');
+      const savedRememberMe = await AsyncStorage.getItem(
+        '@gym_app_remember_me',
+      );
+
+      if (savedEmail && savedRememberMe === 'true') {
+        setEmail(savedEmail);
+        setRememberMe(true);
+      }
+    } catch (error) {
+      console.log('Error loading saved credentials:', error);
+    }
+  };
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -39,10 +95,6 @@ const LoginScreen: React.FC = () => {
   };
 
   const handleLogin = async () => {
-    // Set the provided credentials
-    setEmail('Admin@gmail.com');
-    setPassword('123456');
-
     if (!validateForm()) return;
 
     setLoading(true);
@@ -50,19 +102,33 @@ const LoginScreen: React.FC = () => {
       // Simulate API call
       await new Promise<void>(resolve => setTimeout(resolve, 1500));
 
-      // Verify the provided credentials
-      if (email === 'Admin@gmail.com' && password === '123456') {
+      // For demo purposes, accept any valid email/password combination
+      // In a real app, this would be an API call
+      if (email && password && password.length >= 6) {
+        // Save credentials if remember me is checked
+        if (rememberMe) {
+          await AsyncStorage.setItem('@gym_app_saved_email', email);
+          await AsyncStorage.setItem('@gym_app_remember_me', 'true');
+        } else {
+          await AsyncStorage.removeItem('@gym_app_saved_email');
+          await AsyncStorage.removeItem('@gym_app_remember_me');
+        }
+
         await AsyncStorage.setItem('@gym_app_user_token', 'demo_token');
-        // Navigate to Home screen
-        navigation.reset({
+
+        // Navigate to main app - we need to navigate to the root navigator
+        navigation.getParent()?.reset({
           index: 0,
-          routes: [{ name: 'Main' }], // Assuming 'Main' is the name of the main navigator
+          routes: [{ name: 'Main' }],
         });
       } else {
         throw new Error('Invalid credentials');
       }
     } catch (error) {
-      Alert.alert('Error', 'Login failed. Please try again.');
+      Alert.alert(
+        'Error',
+        'Login failed. Please check your credentials and try again.',
+      );
     } finally {
       setLoading(false);
     }
@@ -78,7 +144,18 @@ const LoginScreen: React.FC = () => {
 
   return (
     <Layout variant="keyboard-avoiding">
-      <View style={{ flex: 1, justifyContent: 'center' }}>
+      <Animated.View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          width: '100%',
+          maxWidth: 440,
+          alignSelf: 'center',
+          paddingVertical: theme.semanticSpacing.xl,
+          opacity: fadeAnim,
+          transform: [{ translateY: slideAnim }],
+        }}
+      >
         {/* Header */}
         <View
           style={{
@@ -86,19 +163,19 @@ const LoginScreen: React.FC = () => {
             marginBottom: theme.semanticSpacing['3xl'],
           }}
         >
-          <View
+          <LinearGradient
+            colors={theme.colors.gradients.primary}
             style={{
               width: 80,
               height: 80,
               borderRadius: 40,
-              backgroundColor: theme.colors.primary[500],
               justifyContent: 'center',
               alignItems: 'center',
               marginBottom: theme.semanticSpacing.lg,
             }}
           >
             <Text style={{ fontSize: 40, color: theme.colors.white }}>💪</Text>
-          </View>
+          </LinearGradient>
 
           <Text
             style={[
@@ -106,6 +183,7 @@ const LoginScreen: React.FC = () => {
               {
                 color: theme.colors.text,
                 marginBottom: theme.semanticSpacing.sm,
+                textAlign: 'center',
               },
             ]}
           >
@@ -120,10 +198,26 @@ const LoginScreen: React.FC = () => {
           >
             Sign in to continue your fitness journey
           </Text>
+
+          <Badge
+            variant="info"
+            size="small"
+            style={{ marginTop: theme.semanticSpacing.md, alignSelf: 'center' }}
+          >
+            Demo: Use any valid email & password (6+ chars)
+          </Badge>
         </View>
 
         {/* Login Form */}
-        <Card variant="elevated" padding="large">
+        <Card
+          variant="elevated"
+          padding="large"
+          style={{
+            width: '100%',
+            borderWidth: theme.semanticSpacing.borderWidth[1],
+            borderColor: theme.colors.border,
+          }}
+        >
           <View style={{ gap: theme.semanticSpacing.lg }}>
             <Input
               label="Email"
@@ -133,6 +227,7 @@ const LoginScreen: React.FC = () => {
               keyboardType="email-address"
               autoCapitalize="none"
               leftIcon="email"
+              variant="filled"
               error={errors.email}
             />
 
@@ -141,21 +236,57 @@ const LoginScreen: React.FC = () => {
               placeholder="Enter your password"
               value={password}
               onChangeText={setPassword}
-              secureTextEntry
+              secureTextEntry={!showPassword}
               leftIcon="lock"
+              rightIcon={showPassword ? 'visibility-off' : 'visibility'}
+              onRightIconPress={() => setShowPassword(!showPassword)}
+              variant="filled"
               error={errors.password}
             />
 
-            <TouchableOpacity onPress={handleForgotPassword}>
-              <Text
-                style={[
-                  theme.typography.body.medium,
-                  { color: theme.colors.primary[500], textAlign: 'right' },
-                ]}
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                rowGap: theme.semanticSpacing.sm,
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => setRememberMe(!rememberMe)}
+                style={{ flexDirection: 'row', alignItems: 'center', flexShrink: 1 }}
               >
-                Forgot Password?
-              </Text>
-            </TouchableOpacity>
+                <Icon
+                  name={rememberMe ? 'check-box' : 'check-box-outline-blank'}
+                  size={20}
+                  color={
+                    rememberMe
+                      ? theme.colors.primary[500]
+                      : theme.colors.textMuted
+                  }
+                />
+                <Text
+                  style={[
+                    theme.typography.body.small,
+                    { color: theme.colors.textSecondary, marginLeft: 8 },
+                  ]}
+                >
+                  Remember me
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={handleForgotPassword}>
+                <Text
+                  style={[
+                    theme.typography.body.medium,
+                    { color: theme.colors.primary[500] },
+                  ]}
+                >
+                  Forgot Password?
+                </Text>
+              </TouchableOpacity>
+            </View>
 
             <Button
               title="Sign In"
@@ -166,6 +297,19 @@ const LoginScreen: React.FC = () => {
               loading={loading}
               gradient
             />
+
+            <Divider label="or" />
+
+            <Button
+              title="Continue with Google"
+              onPress={() =>
+                Alert.alert('Info', 'Google sign-in would be implemented here')
+              }
+              variant="outline"
+              size="large"
+              fullWidth
+              style={{ justifyContent: 'center' }}
+            />
           </View>
         </Card>
 
@@ -175,6 +319,7 @@ const LoginScreen: React.FC = () => {
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
+            flexWrap: 'wrap',
             marginTop: theme.semanticSpacing['2xl'],
           }}
         >
@@ -197,7 +342,7 @@ const LoginScreen: React.FC = () => {
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </Animated.View>
     </Layout>
   );
 };

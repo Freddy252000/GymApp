@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   TextInput,
@@ -10,7 +10,7 @@ import {
   TextInputProps,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useTheme} from '../../context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 
 interface InputProps extends Omit<TextInputProps, 'style'> {
   label?: string;
@@ -41,7 +41,7 @@ const Input: React.FC<InputProps> = ({
   secureTextEntry,
   ...textInputProps
 }) => {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const [isFocused, setIsFocused] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -80,21 +80,21 @@ const Input: React.FC<InputProps> = ({
         borderRadius: 0,
       },
       outlined: {
-        backgroundColor: 'transparent',
+        backgroundColor: theme.colors.card,
         borderWidth: theme.semanticSpacing.borderWidth[1],
-        borderColor: error 
-          ? theme.colors.error[500] 
-          : isFocused 
-            ? theme.colors.primary[500] 
+        borderColor: error
+          ? theme.colors.error[500]
+          : isFocused
+            ? theme.colors.primary[500]
             : theme.colors.border,
       },
       filled: {
         backgroundColor: theme.colors.surface,
         borderWidth: theme.semanticSpacing.borderWidth[1],
-        borderColor: error 
-          ? theme.colors.error[500] 
-          : isFocused 
-            ? theme.colors.primary[500] 
+        borderColor: error
+          ? theme.colors.error[500]
+          : isFocused
+            ? theme.colors.primary[500]
             : 'transparent',
       },
     };
@@ -137,22 +137,26 @@ const Input: React.FC<InputProps> = ({
   };
 
   const iconSize = size === 'small' ? 16 : size === 'large' ? 24 : 20;
-  const iconColor = theme.colors.textMuted;
+  const iconColor = error
+    ? theme.colors.error[500]
+    : isFocused
+      ? theme.colors.primary[500]
+      : theme.colors.textMuted;
 
   return (
     <View style={containerStyle}>
       {label && <Text style={[getLabelStyle(), labelStyle]}>{label}</Text>}
-      
+
       <View style={getContainerStyle()}>
         {leftIcon && (
-          <Icon 
-            name={leftIcon} 
-            size={iconSize} 
-            color={iconColor} 
-            style={{marginRight: theme.semanticSpacing.sm}} 
+          <Icon
+            name={leftIcon}
+            size={iconSize}
+            color={iconColor}
+            style={{ marginRight: theme.semanticSpacing.sm }}
           />
         )}
-        
+
         <TextInput
           {...textInputProps}
           style={[getInputStyle(), inputStyle]}
@@ -167,32 +171,32 @@ const Input: React.FC<InputProps> = ({
           }}
           placeholderTextColor={theme.colors.textMuted}
         />
-        
+
         {isPassword && (
           <TouchableOpacity
             onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-            style={{marginLeft: theme.semanticSpacing.sm}}>
-            <Icon 
-              name={isPasswordVisible ? 'visibility-off' : 'visibility'} 
-              size={iconSize} 
-              color={iconColor} 
+            style={{ marginLeft: theme.semanticSpacing.sm }}>
+            <Icon
+              name={isPasswordVisible ? 'visibility-off' : 'visibility'}
+              size={iconSize}
+              color={iconColor}
             />
           </TouchableOpacity>
         )}
-        
+
         {rightIcon && !isPassword && (
           <TouchableOpacity
             onPress={onRightIconPress}
-            style={{marginLeft: theme.semanticSpacing.sm}}>
-            <Icon 
-              name={rightIcon} 
-              size={iconSize} 
-              color={iconColor} 
+            style={{ marginLeft: theme.semanticSpacing.sm }}>
+            <Icon
+              name={rightIcon}
+              size={iconSize}
+              color={iconColor}
             />
           </TouchableOpacity>
         )}
       </View>
-      
+
       {(error || helperText) && (
         <Text style={getHelperTextStyle()}>
           {error || helperText}

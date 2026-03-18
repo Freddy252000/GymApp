@@ -12,6 +12,15 @@ export type AuthStackParamList = {
   ForgotPassword: undefined;
 };
 
+export type OnboardingStackParamList = {
+  OnboardingWelcome: undefined;
+  OnboardingGoals: undefined;
+  OnboardingFitnessLevel: undefined;
+  OnboardingPreferences: undefined;
+  OnboardingComplete: undefined;
+  Main: undefined; // For navigation reset
+};
+
 export type MainTabParamList = {
   Home: undefined;
   Workouts: undefined;

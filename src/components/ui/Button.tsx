@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {useTheme} from '../../context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 
 interface ButtonProps {
   title: string;
@@ -35,7 +35,7 @@ const Button: React.FC<ButtonProps> = ({
   textStyle,
   gradient = false,
 }) => {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
 
   const getButtonStyle = (): ViewStyle => {
     const baseStyle: ViewStyle = {
@@ -73,7 +73,7 @@ const Button: React.FC<ButtonProps> = ({
         backgroundColor: theme.colors.secondary[500],
       },
       outline: {
-        backgroundColor: 'transparent',
+        backgroundColor: theme.colors.surface,
         borderWidth: theme.semanticSpacing.borderWidth[2],
         borderColor: theme.colors.primary[500],
       },
@@ -89,8 +89,8 @@ const Button: React.FC<ButtonProps> = ({
       ...baseStyle,
       ...sizeStyles[size],
       ...variantStyles[variant],
-      ...(fullWidth && {width: '100%'}),
-      ...(disabled && {opacity: 0.6}),
+      ...(fullWidth && { width: '100%' }),
+      ...(disabled && { opacity: 0.6 }),
     };
   };
 
@@ -102,11 +102,11 @@ const Button: React.FC<ButtonProps> = ({
     };
 
     const variantStyles: Record<string, TextStyle> = {
-      primary: {color: theme.colors.white},
-      secondary: {color: theme.colors.white},
-      outline: {color: theme.colors.primary[500]},
-      ghost: {color: theme.colors.primary[500]},
-      danger: {color: theme.colors.white},
+      primary: { color: theme.colors.white },
+      secondary: { color: theme.colors.white },
+      outline: { color: theme.colors.primary[500] },
+      ghost: { color: theme.colors.primary[500] },
+      danger: { color: theme.colors.white },
     };
 
     return {
@@ -124,7 +124,7 @@ const Button: React.FC<ButtonProps> = ({
         <ActivityIndicator
           size="small"
           color={variant === 'outline' || variant === 'ghost' ? theme.colors.primary[500] : theme.colors.white}
-          style={{marginRight: theme.semanticSpacing.sm}}
+          style={{ marginRight: theme.semanticSpacing.sm }}
         />
       )}
       <Text style={[buttonTextStyle, textStyle]}>{title}</Text>
@@ -132,21 +132,21 @@ const Button: React.FC<ButtonProps> = ({
   );
 
   if (gradient && (variant === 'primary' || variant === 'secondary')) {
-    const gradientColors = variant === 'primary' 
-      ? theme.colors.gradients.primary 
+    const gradientColors = variant === 'primary'
+      ? theme.colors.gradients.primary
       : theme.colors.gradients.secondary;
 
     return (
       <TouchableOpacity
         onPress={onPress}
         disabled={disabled || loading}
-        style={[{borderRadius: theme.semanticSpacing.borderRadius.lg}, style]}
+        style={[{ borderRadius: theme.semanticSpacing.borderRadius.lg }, style]}
         activeOpacity={0.8}>
         <LinearGradient
           colors={gradientColors}
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 0}}
-          style={[buttonStyle, {backgroundColor: 'transparent'}]}>
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={[buttonStyle, { backgroundColor: 'transparent' }]}>
           <ButtonContent />
         </LinearGradient>
       </TouchableOpacity>

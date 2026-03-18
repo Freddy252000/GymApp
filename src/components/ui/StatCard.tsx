@@ -71,8 +71,13 @@ const StatCard: React.FC<StatCardProps> = ({
   };
 
   const renderMinimalCard = () => (
-    <TouchableOpacity onPress={onPress} activeOpacity={onPress ? 0.7 : 1} disabled={!onPress}>
-      <View style={[{ padding: theme.semanticSpacing.md }, style]}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={onPress ? 0.7 : 1}
+      disabled={!onPress}
+      style={{ alignSelf: 'flex-start', ...style }}
+    >
+      <View style={{ padding: theme.semanticSpacing.md }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <View style={{ flex: 1 }}>
             <Text style={[theme.typography.body.small, { color: theme.colors.textSecondary }]}>
@@ -120,8 +125,13 @@ const StatCard: React.FC<StatCardProps> = ({
   );
 
   const renderCircularCard = () => (
-    <TouchableOpacity onPress={onPress} activeOpacity={onPress ? 0.7 : 1} disabled={!onPress}>
-      <Card variant="elevated" padding="large" style={[{ alignItems: 'center' }, style]}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={onPress ? 0.7 : 1}
+      disabled={!onPress}
+      style={{ alignSelf: 'flex-start' }}
+    >
+      <Card variant="elevated" padding="large" style={{ alignItems: 'center', ...style }}>
         <CircularProgress
           progress={progressPercentage}
           size={100}
@@ -150,8 +160,13 @@ const StatCard: React.FC<StatCardProps> = ({
   );
 
   const renderGradientCard = () => (
-    <TouchableOpacity onPress={onPress} activeOpacity={onPress ? 0.7 : 1} disabled={!onPress}>
-      <Card variant="elevated" padding="none" style={style}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={onPress ? 0.7 : 1}
+      disabled={!onPress}
+      style={[{ alignSelf: 'stretch' }, style]}  // stretch, not flex-start
+    >
+      <Card variant="elevated" padding="none">
         <LinearGradient
           colors={[primaryColor, `${primaryColor}CC`]}
           start={{ x: 0, y: 0 }}
@@ -214,12 +229,7 @@ const StatCard: React.FC<StatCardProps> = ({
                 size={16}
                 color={theme.colors.white}
               />
-              <Text
-                style={[
-                  theme.typography.caption,
-                  { color: theme.colors.white, opacity: 0.9, marginLeft: 4 },
-                ]}
-              >
+              <Text style={[theme.typography.caption, { color: theme.colors.white, opacity: 0.9, marginLeft: 4 }]}>
                 {trend.isPositive ? '+' : ''}{trend.value}% {trend.period}
               </Text>
             </View>
@@ -230,8 +240,13 @@ const StatCard: React.FC<StatCardProps> = ({
   );
 
   const renderDefaultCard = () => (
-    <TouchableOpacity onPress={onPress} activeOpacity={onPress ? 0.7 : 1} disabled={!onPress}>
-      <Card variant="elevated" padding="large" style={[{ alignSelf: 'flex-start' }, style]}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={onPress ? 0.7 : 1}
+      disabled={!onPress}
+      style={{ alignSelf: 'flex-start', flex: (style as any)?.flex }}
+    >
+      <Card variant="elevated" padding="large" style={{ width: '100%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <View style={{ flex: 1 }}>
             <Text style={[theme.typography.body.medium, { color: theme.colors.textSecondary }]}>
@@ -285,6 +300,68 @@ const StatCard: React.FC<StatCardProps> = ({
       </Card>
     </TouchableOpacity>
   );
+
+  // const renderDefaultCard = () => (
+  //   <TouchableOpacity
+  //     onPress={onPress}
+  //     activeOpacity={onPress ? 0.7 : 1}
+  //     disabled={!onPress}
+  //     style={{ alignSelf: 'flex-start', flex: (style as any)?.flex }}
+  //   >
+  //     <Card variant="elevated" padding="large" style={style}>
+  //       <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+  //         <View style={{ flex: 1 }}>
+  //           <Text style={[theme.typography.body.medium, { color: theme.colors.textSecondary }]}>
+  //             {title}
+  //           </Text>
+  //           <Text style={[theme.typography.heading.h2, { color: theme.colors.text, marginTop: 4 }]}>
+  //             {value}
+  //           </Text>
+  //           {subtitle && (
+  //             <Text style={[theme.typography.body.small, { color: theme.colors.textMuted, marginTop: 4 }]}>
+  //               {subtitle}
+  //             </Text>
+  //           )}
+  //           {renderTrend()}
+  //         </View>
+
+  //         {icon && (
+  //           <View
+  //             style={{
+  //               width: 48,
+  //               height: 48,
+  //               borderRadius: 24,
+  //               backgroundColor: `${primaryColor}20`,
+  //               justifyContent: 'center',
+  //               alignItems: 'center',
+  //             }}
+  //           >
+  //             <Icon name={icon} size={24} color={primaryColor} />
+  //           </View>
+  //         )}
+  //       </View>
+
+  //       {progress && (
+  //         <View style={{ marginTop: theme.semanticSpacing.lg }}>
+  //           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+  //             <Text style={[theme.typography.caption, { color: theme.colors.textSecondary }]}>
+  //               Progress
+  //             </Text>
+  //             <Text style={[theme.typography.caption, { color: theme.colors.textSecondary }]}>
+  //               {progress.current} / {progress.total}
+  //             </Text>
+  //           </View>
+  //           <ProgressBar
+  //             progress={progressPercentage}
+  //             height={6}
+  //             color={primaryColor}
+  //             rounded
+  //           />
+  //         </View>
+  //       )}
+  //     </Card>
+  //   </TouchableOpacity>
+  // );
 
   switch (variant) {
     case 'minimal':

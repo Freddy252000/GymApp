@@ -1,15 +1,15 @@
-import React, {useState} from 'react';
-import {View, Text, Image, Dimensions} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {RootStackParamList} from '../../navigation/types';
-import {useTheme} from '../../context/ThemeContext';
-import {Layout, Button, Card} from '../../components/ui';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../navigation/types';
+import { useTheme } from '../../context/ThemeContext';
+import { Layout, Button, Card } from '../../components/ui';
 
 type OnboardingNavigationProp = StackNavigationProp<RootStackParamList, 'Onboarding'>;
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const onboardingData = [
   {
@@ -36,7 +36,7 @@ const onboardingData = [
 ];
 
 const OnboardingScreen: React.FC = () => {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const navigation = useNavigation<OnboardingNavigationProp>();
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -65,7 +65,7 @@ const OnboardingScreen: React.FC = () => {
 
   return (
     <Layout variant="default" padding={false}>
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding: theme.semanticSpacing.screenPadding}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: theme.semanticSpacing.screenPadding }}>
         {/* Icon */}
         <View style={{
           width: 120,
@@ -76,28 +76,28 @@ const OnboardingScreen: React.FC = () => {
           alignItems: 'center',
           marginBottom: theme.semanticSpacing['2xl'],
         }}>
-          <Text style={{fontSize: 60}}>{currentItem.icon}</Text>
+          <Text style={{ fontSize: 60 }}>{currentItem.icon}</Text>
         </View>
 
         {/* Content */}
-        <Card variant="default" padding="large" style={{width: '100%', alignItems: 'center'}}>
+        <Card variant="default" padding="large" style={{ width: '100%', alignItems: 'center' }}>
           <Text style={[
             theme.typography.heading.h1,
-            {color: theme.colors.text, textAlign: 'center', marginBottom: theme.semanticSpacing.md}
+            { color: theme.colors.text, textAlign: 'center', marginBottom: theme.semanticSpacing.md }
           ]}>
             {currentItem.title}
           </Text>
-          
+
           <Text style={[
             theme.typography.heading.h5,
-            {color: theme.colors.primary[500], textAlign: 'center', marginBottom: theme.semanticSpacing.lg}
+            { color: theme.colors.primary[500], textAlign: 'center', marginBottom: theme.semanticSpacing.lg }
           ]}>
             {currentItem.subtitle}
           </Text>
-          
+
           <Text style={[
             theme.typography.body.large,
-            {color: theme.colors.textSecondary, textAlign: 'center', marginBottom: theme.semanticSpacing['2xl']}
+            { color: theme.colors.textSecondary, textAlign: 'center', marginBottom: theme.semanticSpacing['2xl'] }
           ]}>
             {currentItem.description}
           </Text>
@@ -123,7 +123,7 @@ const OnboardingScreen: React.FC = () => {
           </View>
 
           {/* Buttons */}
-          <View style={{width: '100%', gap: theme.semanticSpacing.md}}>
+          <View style={{ width: '100%', gap: theme.semanticSpacing.md }}>
             <Button
               title={currentIndex === onboardingData.length - 1 ? 'Get Started' : 'Next'}
               onPress={handleNext}
@@ -132,7 +132,7 @@ const OnboardingScreen: React.FC = () => {
               fullWidth
               gradient
             />
-            
+
             {currentIndex < onboardingData.length - 1 && (
               <Button
                 title="Skip"
